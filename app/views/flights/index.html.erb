@@ -1,0 +1,45 @@
+<h1>Search Flights</h1>
+
+
+<%= form_with url: flights_path, method: :get, local: true do |f| %>
+<div>
+<%= label_tag :from, "From" %>
+<%= select_tag :from, options_from_collection_for_select(@airports, :id, :code, params[:from]) %>
+</div>
+
+
+<div>
+<%= label_tag :to, "To" %>
+<%= select_tag :to, options_from_collection_for_select(@airports, :id, :code, params[:to]) %>
+</div>
+
+
+<div>
+<%= label_tag :passengers, "Passengers" %>
+<%= select_tag :passengers, options_for_select(1..4, params[:passengers]) %>
+</div>
+
+
+<div>
+<%= label_tag :date, "Date" %>
+<%= select_tag :date, options_for_select(@dates, params[:date]) %>
+</div>
+
+
+<%= submit_tag "Search" %>
+<% end %>
+
+
+<hr>
+
+
+<h2>Available Flights</h2>
+<ul>
+<% @flights.each do |flight| %>
+<li>
+<%= flight.departure_airport.code %> → <%= flight.arrival_airport.code %>
+| <%= flight.departure_time.strftime("%Y-%m-%d %H:%M") %>
+| Duration: <%= flight.duration_minutes %> mins
+</li>
+<% end %>
+</ul>
