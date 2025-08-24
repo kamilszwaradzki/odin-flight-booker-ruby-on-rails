@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_23_180853) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_23_191005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_23_180853) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "bookings", force: :cascade do |t|
+    t.bigint "flight_id", null: false
+    t.string "contact_email"
+    t.string "contact_phone"
+    t.string "booking_reference"
+    t.integer "status"
+    t.integer "total_price_cents"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["booking_reference"], name: "index_bookings_on_booking_reference"
+    t.index ["flight_id"], name: "index_bookings_on_flight_id"
   end
 
   create_table "flights", force: :cascade do |t|
@@ -39,6 +52,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_23_180853) do
     t.check_constraint "seats_available >= 0 AND seats_available <= seats_total", name: "chk_flights_seat_bounds"
   end
 
+  create_table "passengers", force: :cascade do |t|
+    t.bigint "booking_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "document_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["booking_id"], name: "index_passengers_on_booking_id"
+  end
+
+  add_foreign_key "bookings", "flights"
   add_foreign_key "flights", "airports", column: "arrival_airport_id"
   add_foreign_key "flights", "airports", column: "departure_airport_id"
+  add_foreign_key "passengers", "bookings"
 end
