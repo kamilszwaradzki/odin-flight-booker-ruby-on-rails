@@ -9,6 +9,7 @@ class BookingsController < ApplicationController
   def create
     @booking = Booking.new(booking_params)
     if @booking.save
+      PassengerMailer.confirmation_email(@passenger).deliver_later
       redirect_to @booking, notice: "Booking successfully created!"
     else
       @flight = @booking.flight
